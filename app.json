@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "ConvierteYA",
+    "slug": "convierteya",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jaziel.convierteya"
+    },
+    "android": {
+      "package": "com.jaziel.convierteya",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B7A64",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "name": "ConvierteYA",
+      "themeColor": "#0B7A64"
+    },
+    "experiments": {
+      "baseUrl": "/ConvierteYA-Multiplataforma"
+    }
+  }
+}
