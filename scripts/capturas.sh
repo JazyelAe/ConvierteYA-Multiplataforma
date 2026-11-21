@@ -124,7 +124,7 @@ adb shell cmd connectivity airplane-mode enable; sleep 4
 anota "Modo avión: $(adb shell settings get global airplane_mode_on | tr -d '\r') (1 = activado)"
 adb shell am force-stop "$PKG"; sleep 1; abrir
 tocar "Divisas"
-esperar "Sin conexión · tipos del" 10 && anota "CA-3 sin conexión usa los tipos guardados: OK"
+comprobar "Sin conexión · tipos del" "CA-3 sin conexión avisa y usa los tipos guardados"
 comprobar "$ESPERADO" "CA-3 mismo resultado sin conexión"
 cap 09_android_sin_conexion.png
 adb shell cmd connectivity airplane-mode disable; sleep 3

@@ -26,9 +26,10 @@ export async function obtenerTipos() {
   const control = new AbortController();
   const limite = setTimeout(() => control.abort(), 8000); // no esperar para siempre
   try {
-    // cache: 'no-store' evita que el navegador responda con una copia vieja de su caché
-    // y la app diga "En línea" sin red. Sin conexión, fetch falla y se usa el respaldo guardado.
-    const respuesta = await fetch(URL_API, { signal: control.signal, cache: 'no-store' });
+    // La API permite guardar su respuesta en caché un día. Para que la app no diga "En línea" sin red,
+    // cada consulta lleva una marca de tiempo distinta (&t=...): así ni el navegador ni Android (OkHttp)
+    // pueden responder con una copia guardada. Sin conexión, fetch falla y se usa el respaldo.
+    const respuesta = await fetch(`${URL_API}&t=${Date.now()}`, { signal: control.signal, cache: 'no-store' });
     if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
     const tipos = leerRespuesta(await respuesta.json());
     await AsyncStorage.setItem(CLAVE_TIPOS, JSON.stringify(tipos));
