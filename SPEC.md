@@ -3,7 +3,7 @@
 **Materia:** Aplicaciones Web Progresivas · Unidad I · Actividad Desarrollo
 **Alumno:** Jahir Jaziel Serrano Arana · 10° D
 **Repositorio:** `JazyelAe/ConvierteYA-Multiplataforma` (nuevo, público)
-**Estado:** borrador para aprobación (Checkpoint A)
+**Estado:** aprobado el 20/11/2026 · implementado · Release v1.0.1 · web publicada
 
 ## 1. Objetivo
 Construir **una sola base de código** en JavaScript con **React Native + Expo** que funcione en **Android, iOS y Web**: un conversor de unidades y de divisas. El punto clave del reporte es demostrar que el **mismo código** produce:
@@ -90,4 +90,17 @@ iOS es compatible por diseño (Expo), pero **no se puede compilar ni probar aqu�
 Fuentes técnicas (comprobadas): documentación de React Native, Expo (incluidos Expo Go y Clipboard), AsyncStorage y Frankfurter.
 
 ## 10. Pruebas
-_(Se llena después de implementar.)_
+| # | Resultado | Evidencia |
+|---|---|---|
+| CA-1 | ✅ La web en Pages convierte unidades (10 km = 6.21371 mi, 37 °C = 98.6 °F) y divisas (100 USD = 1,906.71 MXN, igual que la API). Consola sin errores. **14/14** comprobaciones con Playwright. | `pruebas_web.txt`, `01`–`04` |
+| CA-2 | ✅ El APK v1.0.1 se instala y abre en el emulador Pixel 6 con Android 14. Las mismas conversiones dan **los mismos resultados** que en la web, y la etiqueta muestra «Android · API 34». | `pruebas_emulador.txt`, `06`, `07`, `11_misma_app_web_android.png` |
+| CA-3 | ✅ La API responde en ambas plataformas. Sin conexión (Chrome sin red; modo avión en Android) se muestra «Sin conexión · tipos del 20/11/2026» con el mismo resultado. | `05_web_sin_conexion.png`, `09_android_sin_conexion.png` |
+| CA-4 | ✅ El historial persiste al recargar la web y tras `am force-stop` y volver a abrir la app en Android. Se puede borrar una entrada. | `03`, `08` |
+| CA-5 | ✅ Intercambiar da 37 °F = 2.77778 °C. En la web se leyó el portapapeles real (`37 °F = 2.77778 °C`); en Android se ven el Toast y la vista previa del portapapeles del sistema. Hay 3 vibraciones registradas en `dumpsys vibrator_manager`. | `06b_android_copiar.png` |
+| CA-6 | ✅ `jest`: 12/12 pruebas (en la PC y en Actions). | Actions |
+| CA-7 | ✅ README con capturas, enlaces e instrucciones de Expo Go. | README.md |
+
+**Incidencias encontradas y corregidas:**
+- **Web:** el navegador respondía desde su caché HTTP (la API permite guardar un día) y la app decía «En línea» sin red. Se agregó `cache: 'no-store'`.
+- **Android (v1.0.0):** React Native ignora `cache: 'no-store'` en Android, y OkHttp respondía desde su caché en modo avión. Se agregó una marca de tiempo única a la URL (`&t=...`) y se publicó la **v1.0.1**. La v1.0.0 sigue publicada, pero no debe usarse.
+- **iOS:** no se compiló ni se probó (requiere una Mac o una cuenta de Expo/Apple).
