@@ -1,0 +1,51 @@
+# APK de Android a partir del MISMO código, sin cuenta de Expo (no usa EAS):
+# "expo prebuild" genera el proyecto nativo de Android y Gradle lo compila.
+# Al crear una etiqueta v* (por ejemplo v1.0.0) adjunta el APK a un Release.
+name: Android
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - run: npm ci
+      - run: npm test
+      - name: Generar el proyecto nativo de Android
+        run: npx expo prebuild -p android --no-install
+      - name: Compilar APK (firmado con la llave de depuración)
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,x86_64
+      - name: Renombrar
+        run: |
+          VERSION="${GITHUB_REF_NAME}"
+          [[ "$VERSION" == v* ]] || VERSION="prueba"
+          cp android/app/build/outputs/apk/release/app-release.apk "ConvierteYA-${VERSION}.apk"
+          ls -lh ConvierteYA-*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ConvierteYA-apk
+          path: ConvierteYA-*.apk
+      - name: Crear Release con el APK
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "ConvierteYA-${GITHUB_REF_NAME}.apk" \
+            --title "ConvierteYA $GITHUB_REF_NAME" \
+            --notes "APK de ConvierteYA (React Native + Expo SDK 58), generado con el mismo código que la versión web. Descarga el .apk en tu teléfono Android, ábrelo y permite instalar apps de origen desconocido. Versión web: https://jazyelae.github.io/ConvierteYA-Multiplataforma/"
